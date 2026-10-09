@@ -1,6 +1,14 @@
-# Super Secure Password Generator
+<h1 align="center">🔐 Super Secure Password Generator</h1>
 
-A browser app that generates a random password based on criteria you choose.
+<p align="center">Generate a strong random password from the length and character types you choose.</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&amp;logo=css&amp;logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&amp;logo=javascript&amp;logoColor=black" alt="JavaScript">
+</p>
+
+<p align="center"><img src="docs/screenshot.png" alt="Password Generator showing a freshly generated 20-character password" width="850"></p>
 
 ## Features
 
