@@ -12,20 +12,28 @@
 
 ## Features
 
-- Choose a password length from 8 to 128 characters
+- Choose a password length from 8 to 128 characters with a slider
 - Choose which character types to include:
   - Uppercase letters
   - Lowercase letters
   - Numbers
   - Special characters
-- Requires at least one character type to be selected
-- Every password includes at least one character from each type you selected, then shuffles the result
-- The password appears in the text box, ready to copy
+- Every password contains at least one character from each type you selected
+- One-click **Copy** button
+- Shows a clear message if no character type is selected
+- Responsive layout for desktop and mobile
+
+## Security
+
+The randomness comes from the browser's cryptographically secure generator, [`crypto.getRandomValues`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues), not `Math.random()`.
+
+- Characters are picked with rejection sampling to avoid modulo bias.
+- The final password is shuffled with a Fisher–Yates shuffle that uses the same secure source.
+- Nothing is sent over the network. Passwords never leave your device.
 
 ## Built With
 
-- HTML, CSS, JavaScript
-- [rando.js](https://randojs.com/) for random selection and shuffling
+- HTML, CSS and JavaScript (no libraries)
 
 ## Running Locally
 
@@ -36,16 +44,6 @@ No build step is needed.
    git clone https://github.com/ChristianKrantz11/super-secure-password-generator.git
    ```
 2. Open `index.html` in your browser.
-3. Click **Generate Password** and answer the prompts.
-
-## Known Issues
-
-The top of `script.js` contains leftover starter code that logs a console error when the page loads:
-
-- `window.getElementById(...)` should be `document.getElementById(...)`
-- `writePassword` calls `generatePassword()`, which doesn't exist
-
-The **Generate Password** button still works, because it calls `generateNewPassword()` directly.
 
 ## Author
 

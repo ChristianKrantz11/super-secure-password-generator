@@ -2,11 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Generate strong random passwords in your browser." />
     <link rel="stylesheet" href="style.css" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Password Generator</title>
-    <script src="https://randojs.com/1.0.0.js"></script>
   </head>
 
   <body>
@@ -14,23 +13,42 @@
       <header>
         <h1>Password Generator</h1>
       </header>
-      <div class="card">
+      <main class="card">
         <div class="card-header">
           <h2>Generate a Password</h2>
         </div>
-        <div class="card-body">
-          <textarea
-            readonly
-            id="password"
-            placeholder="Your Secure Password"
-            aria-label="Generated Password"
-          ></textarea>
-           
-        </div>
+
+        <form id="options" class="card-body">
+          <div class="field">
+            <label for="length">Length: <output id="length-value" for="length">16</output> characters</label>
+            <input type="range" id="length" min="8" max="128" value="16" />
+          </div>
+
+          <fieldset class="field">
+            <legend>Include</legend>
+            <label class="check"><input type="checkbox" id="uppercase" checked /> Uppercase letters (A–Z)</label>
+            <label class="check"><input type="checkbox" id="lowercase" checked /> Lowercase letters (a–z)</label>
+            <label class="check"><input type="checkbox" id="numbers" checked /> Numbers (0–9)</label>
+            <label class="check"><input type="checkbox" id="symbols" checked /> Special characters (!@#$…)</label>
+          </fieldset>
+          <p id="error" class="error" role="alert"></p>
+
+          <div class="output">
+            <textarea
+              readonly
+              id="password"
+              placeholder="Your Secure Password"
+              aria-label="Generated Password"
+            ></textarea>
+            <button type="button" id="copy" class="copy-btn" disabled>Copy</button>
+          </div>
+        </form>
+
         <div class="card-footer">
-          <button id="generate" class="btn" onclick="generateNewPassword();">Generate Password</button>
+          <button id="generate" class="btn" type="submit" form="options">Generate Password</button>
         </div>
-      </div>
+      </main>
+      <p class="note">Passwords are generated in your browser with <code>crypto.getRandomValues</code> and never leave your device.</p>
     </div>
     <script src="script.js"></script>
   </body>

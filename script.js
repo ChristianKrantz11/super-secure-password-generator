@@ -1,47 +1,87 @@
-// Assignment code here
-window.getElementById("generate").addEventListener("click", function() {
-  generateNewPassword();
+var CHARACTER_SETS = {
+  uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  lowercase: "abcdefghijklmnopqrstuvwxyz",
+  numbers: "0123456789",
+  symbols: "!@#$%^&*()-_=+[]{};:,.<>/?~"
+};
+
+var form = document.getElementById("options");
+var lengthInput = document.getElementById("length");
+var lengthValue = document.getElementById("length-value");
+var passwordText = document.getElementById("password");
+var copyButton = document.getElementById("copy");
+var errorEl = document.getElementById("error");
+
+// Cryptographically secure random integer in [0, max), without modulo bias
+function randomInt(max) {
+  var limit = Math.floor(0x100000000 / max) * max;
+  var buffer = new Uint32Array(1);
+  do {
+    crypto.getRandomValues(buffer);
+  } while (buffer[0] >= limit);
+  return buffer[0] % max;
+}
+
+function randomChar(characters) {
+  return characters[randomInt(characters.length)];
+}
+
+// Fisher-Yates shuffle using the secure random source
+function shuffle(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = randomInt(i + 1);
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+function generatePassword(length, sets) {
+  // Start with one character from each selected set so every type is guaranteed to appear
+  var password = sets.map(randomChar);
+  var allCharacters = sets.join("");
+  while (password.length < length) {
+    password.push(randomChar(allCharacters));
+  }
+  return shuffle(password).join("");
+}
+
+function selectedSets() {
+  return Object.keys(CHARACTER_SETS)
+    .filter(function (name) {
+      return document.getElementById(name).checked;
+    })
+    .map(function (name) {
+      return CHARACTER_SETS[name];
+    });
+}
+
+lengthInput.addEventListener("input", function () {
+  lengthValue.textContent = lengthInput.value;
 });
 
-function generateNewPassword() {
-  var password = "";
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  var sets = selectedSets();
+  if (sets.length === 0) {
+    errorEl.textContent = "Select at least one character type.";
+    return;
+  }
+  errorEl.textContent = "";
+  passwordText.value = generatePassword(Number(lengthInput.value), sets);
+  copyButton.disabled = false;
+  copyButton.textContent = "Copy";
+});
 
-  var length = Number(prompt("How many characters would you like your password to be?"));
-  while (isNaN(length) || length < 8 || length > 128) length = Number(prompt("Length must be 8-128 characters. How many characters would you like your password to be?"));
-
-  var uppers = confirm("Would you like to use uppercase letters?");
-  var lowers = confirm("Would you like to use lowercase letters?");
-  var numbers = confirm("Would you like to use numbers?");
-  var symbols = confirm("Would you like to use special characters?");
-
-  while (!uppers && !lowers && !numbers && !symbols) {
-    alert("You must select at least one character type!");
-    uppers = confirm("Would you like to use uppercase letters?");
-    lowers = confirm("Would you like to use lowercase letters?");
-    numbers = confirm("Would you like to use numbers?");
-    symbols = confirm("Would you like to use special characters?");
-}
-  var allowed = {};
-  if (uppers) password += rando(allowed.uppers = "QWERTYUIOPASDFGHJKLZXCVBNM");
-  if (lowers) password += rando(allowed.lowers = "qwertyuiopasdfghjklzxcvbnm");
-  if (numbers) password += rando(allowed.numbers = "1234567890");
-  if (symbols) password += rando(allowed.symbols = "!@#$%^&*(){}[]=<>/,.");
-
-  for (var i = password.length; i < length; i++) password += rando(rando(allowed).value);
-
-  document.getElementById("password").value = randoSequence(password).join("");
-}
-// Get references to the #generate element
-var generateBtn = document.querySelector("#generate");
-
-// Write password to the #password input
-function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
-
-}
-
-// Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
+copyButton.addEventListener("click", function () {
+  navigator.clipboard.writeText(passwordText.value).then(
+    function () {
+      copyButton.textContent = "Copied!";
+    },
+    function () {
+      passwordText.select();
+      copyButton.textContent = "Press Ctrl+C";
+    }
+  );
+});
